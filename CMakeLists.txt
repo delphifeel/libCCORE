@@ -30,7 +30,7 @@ add_library(CCORE
 	src/CORE-disjoint-set.c
 )
 
-target_include_directories(CCORE PRIVATE include)
+target_include_directories(CCORE PUBLIC include)
 target_compile_options(CCORE PRIVATE ${LOCAL_COMPLILE_OPTIONS})
 
 enable_testing()
