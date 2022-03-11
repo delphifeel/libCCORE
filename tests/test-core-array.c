@@ -49,7 +49,7 @@ static void Test_Integer(void)
 
 	for (int i = 0; i < 4; i++)
 	{
-		CORE_Assert(i == CSafeArray_Get(int_array, i));
+		CORE_Assert(i + 1 == CSafeArray_Get(int_array, i));
 	}
 }
 
