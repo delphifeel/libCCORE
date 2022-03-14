@@ -16,7 +16,6 @@ typedef struct CList
     ListNode *tail;
 } *CList;
 
-
 #define _CList_ForEach(CLIST, ITEM)                                                         \
     ListNode    *ITEM##_iter;                                                               \
     for (ITEM##_iter = CLIST->head, ITEM = ITEM##_iter ? ITEM##_iter->value : NULL;         \

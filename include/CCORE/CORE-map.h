@@ -3,6 +3,7 @@
 
 #include "CORE-map-private.h"
 
+#define CMap_ForEach        _CMap_ForEach
 
 void 	CMap_Create(CMap *instance_ptr, uint64 map_size);
 void 	CMap_Free(CMap *instance_ptr);
