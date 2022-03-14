@@ -8,6 +8,8 @@
 #include "CCORE/CORE-file.h"
 #include "CCORE/CORE-object.h"
 #include "CCORE/CORE-system.h"
+
 #include "CCORE/CORE-safe-array.h"
+#include "CCORE/CORE-list.h"
 
 #endif

@@ -6,3 +6,4 @@ macro(add_unit_test TESTNAME)
 endmacro()
 
 add_unit_test(test-core-array)
+add_unit_test(test-core-list)
