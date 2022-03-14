@@ -7,3 +7,4 @@ endmacro()
 
 add_unit_test(test-core-array)
 add_unit_test(test-core-list)
+add_unit_test(test-core-map)

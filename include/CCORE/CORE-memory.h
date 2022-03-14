@@ -11,4 +11,12 @@
 #define CORE_MemSet 				                memset
 #define CORE_MemZero(PTR, SIZE)		                CORE_MemSet(PTR, 0, SIZE)
 
+#define CORE_MemCpy                                 memcpy
+#define CORE_MemEqual(PTR1, PTR2, SIZE)             (memcmp(PTR1, PTR2, SIZE) == 0)
+
+#define CORE_MemNewCopy(DEST, SRC, SRC_SIZE)   do {     \
+    DEST = CORE_MemAlloc(SRC_SIZE, 1);                  \
+    CORE_MemCpy(DEST, SRC, SRC_SIZE);                   \
+} while (0)
+
 #endif

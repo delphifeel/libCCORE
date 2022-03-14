@@ -11,5 +11,6 @@
 
 #include "CCORE/CORE-safe-array.h"
 #include "CCORE/CORE-list.h"
+#include "CCORE/CORE-map.h"
 
 #endif

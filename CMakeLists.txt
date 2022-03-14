@@ -29,6 +29,7 @@ add_library(CCORE
 	src/CORE-system.c
 	src/CORE-disjoint-set.c
 	src/CORE-list.c
+	src/CORE-map.c
 )
 
 target_include_directories(CCORE PRIVATE include)
