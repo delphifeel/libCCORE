@@ -2,9 +2,9 @@
 #include "CCORE/CORE-memory.h"
 
 CORE_OBJECT_INTERFACE(CDisjointSet,
-	int 			*map_child_to_parent;
 	uint 			map_child_to_parent_size;
 	uint 			subsets_count;
+	int 			*map_child_to_parent;
 );
 
 /*****************************************************************************************************************************/

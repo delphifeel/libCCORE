@@ -22,7 +22,7 @@
         _CORE_OBJECT_FIELDS(TYPE_STRUCT_INTERFACE)                                  \
     };                                                                              \
                                                                                     \
-    static const char *_CObjectName(TYPE) = #TYPE;                                  \
+    static const char *const _CObjectName(TYPE) = #TYPE;                            \
                                                                                     \
     const char *_CObjectName_GetFunc(TYPE)(void)                                    \
     {                                                                               \

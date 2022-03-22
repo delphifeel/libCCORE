@@ -34,8 +34,9 @@ static BucketNode *_FindBucketNode(CMap map, const char *key, uint64 key_size)
     BucketNode *node;
     CList_ForEach(bucket, node)
     {
-        if (node->key_size != key_size) 
+        if (node->key_size != key_size) {
             continue;
+        }
 
         if (CORE_MemEqual(node->key, key, key_size)) 
         {
@@ -49,8 +50,9 @@ static BucketNode *_FindBucketNode(CMap map, const char *key, uint64 key_size)
 
 void *_CMapIter_Next(struct CMapIter *iter)
 {
-    if (iter->bucket_node_ptr == NULL)
+    if (iter->bucket_node_ptr == NULL) {
         return NULL;
+    }
 
     BucketNode *bucket_node = iter->bucket_node_ptr->value;
     iter->bucket_node_ptr = iter->bucket_node_ptr->next;
