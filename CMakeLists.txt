@@ -30,6 +30,7 @@ add_library(CCORE
 	src/CORE-disjoint-set.c
 	src/CORE-list.c
 	src/CORE-map.c
+	src/CORE-slice.c
 )
 
 target_include_directories(CCORE PUBLIC include)
