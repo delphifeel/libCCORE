@@ -72,10 +72,10 @@ const char *CORE_GetModuleName(const char *file_name, const char *module_name);
  * |___________________________________________________________________________________________________________| 
  * 
  */
-#define CORE_Assert(EXPRESSION) 						(	(EXPRESSION) ? (void) true : (_CORE_DEBUG_ERROR("ASSERT FAILED", _COREDEBUG_ERROR_SYMBOL), CORE_DebugStdErr("%s\n", #EXPRESSION), exit(1))	)
-#define CORE_AssertWithMessage(EXPRESSION, ...) 		(	(EXPRESSION) ? (void) true : (_CORE_DEBUG_ERROR("ASSERT FAILED", _COREDEBUG_ERROR_SYMBOL), CORE_DebugStdErr(__VA_ARGS__), exit(1))	)
+#define CORE_Assert(EXPRESSION) 						(	(EXPRESSION) ? (void) true : (_CORE_DEBUG_ERROR("ASSERT FAILED", _COREDEBUG_ERROR_SYMBOL), CORE_DebugStdErr("%s\n", #EXPRESSION), abort())	)
+#define CORE_AssertWithMessage(EXPRESSION, ...) 		(	(EXPRESSION) ? (void) true : (_CORE_DEBUG_ERROR("ASSERT FAILED", _COREDEBUG_ERROR_SYMBOL), CORE_DebugStdErr(__VA_ARGS__), abort())	)
 #define CORE_AssertPointer(PTR) 						(	CORE_AssertWithMessage((PTR) != NULL, "`%s` is NULL\n", #PTR)	)
-#define CORE_Abort(...) 								(	_CORE_DEBUG_ERROR("ABORT", _COREDEBUG_ERROR_SYMBOL), CORE_DebugStdOut(__VA_ARGS__), abort()	)
+#define CORE_Abort(...) 								(	_CORE_DEBUG_ERROR("ABORT", _COREDEBUG_ERROR_SYMBOL), CORE_DebugStdErr(__VA_ARGS__), abort()	)
 
 /**
  *  ___________________________________________________________________________________________________________

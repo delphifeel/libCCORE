@@ -8,6 +8,7 @@
 struct CSlice 
 {
     void        **src_array;
+    bool        src_array_alloced;
     uint        start_index;
     uint        len;
     uint        cap;
@@ -24,6 +25,5 @@ struct CSlice
     (CORE_AssertWithMessage(slice->len > 0, "Index out of bounds\n"),        \
      slice->len--,                                                           \
      *(slice->src_array + slice->start_index + slice->len))
-
 
 #endif

@@ -12,6 +12,7 @@ void CSlice_CreateFromArray(CSlice  *slice_ptr,
     CSlice slice = *slice_ptr;
 
     slice->src_array = array;
+    slice->src_array_alloced = false;
     slice->start_index = from_index == CSLICE_FROM_START ? 0 : from_index;
     uint endIndex = to_index == CSLICE_TO_THE_END ? array_size : to_index;
     slice->len = endIndex - slice->start_index;
@@ -30,6 +31,10 @@ void CSlice_CreateFromSlice(CSlice *slice_ptr, CSlice src_slice, uint from_index
 
 void CSlice_Append(CSlice slice, const void *value)
 {
+    CORE_AssertWithMessage(
+        slice->src_array_alloced, 
+        "Can't append to slice created from array or other slice\n"
+    );
     if (slice->len == slice->cap) 
     {
         uint new_cap = slice->cap * 2 + 1;
@@ -58,6 +63,7 @@ void CSlice_Create(CSlice *slice_ptr, uint default_cap)
     *slice_ptr = CORE_MemAlloc(sizeof(struct CSlice), 1);
     CSlice slice = *slice_ptr;
     slice->src_array = CORE_MemAlloc(sizeof(void*), default_cap);
+    slice->src_array_alloced = true;
     slice->start_index = 0;
     slice->len = 0;
     slice->cap = default_cap;
@@ -66,6 +72,8 @@ void CSlice_Create(CSlice *slice_ptr, uint default_cap)
 void CSlice_Free(CSlice *slice_ptr) 
 {
     CSlice slice = *slice_ptr;
-    CORE_MemFree(slice->src_array);
+    if (slice->src_array_alloced) {
+       CORE_MemFree(slice->src_array);
+    }
     CORE_MemFree(slice);
 }
