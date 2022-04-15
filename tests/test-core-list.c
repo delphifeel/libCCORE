@@ -150,6 +150,53 @@ void TEST_List_Iterate() {
 	CList_Free(&list);
 }
 
+void TEST_List_Remove() {
+	int numbers[6] = {1, 2, 3, 4, 5, 6};
+	CList list;
+
+
+	CList_Create(&list);
+	for (int i = 0; i < 6; i++) {
+		CList_Append(list, numbers + i);
+	}
+
+	int *value_ptr;
+	int i = 0;
+	CList_ForEach(list, value_ptr)
+	{
+		CORE_Assert(value_ptr == numbers + i);
+		i++;
+	}
+
+	// Remove 1
+	CList_Remove(list, &numbers[0]);
+	// Remove 3
+	CList_Remove(list, &numbers[2]);
+	// Remove 5
+	CList_Remove(list, &numbers[4]);
+	// Remove 6
+	CList_Remove(list, &numbers[5]);
+
+	i = 0;
+	int *value_ptr_2;
+	CList_ForEach(list, value_ptr_2)
+	{
+		if (i == 0) { CORE_Assert(value_ptr_2 == &numbers[1]);	}
+		else if (i == 1) { CORE_Assert(value_ptr_2 == &numbers[3]);	}
+		i++;
+	}
+	CORE_Assert(list->head->value == &numbers[1]);
+	CORE_Assert(list->tail->value == &numbers[3]);
+
+	CORE_Assert(CList_Remove(list, &numbers[0]) == false);
+	CList_Remove(list, &numbers[1]);
+	CORE_Assert(list->head->value == &numbers[3]);
+	CORE_Assert(list->tail->value == &numbers[3]);
+
+
+	CList_Free(&list);
+}
+
 int main() 
 {
 	TEST_List_Create();
@@ -157,5 +204,6 @@ int main()
 	TEST_List_Prepend();
 	TEST_List_IsEmpty();
 	TEST_List_Iterate();
+	TEST_List_Remove();
 	return 0;
 }

@@ -7,6 +7,7 @@
 
 #define CList_ForEach   _CList_ForEach
 
+bool CList_Remove(CList instance, void *value);
 void CList_Append(CList instance, void *value);
 void CList_Prepend(CList instance, void *value);
 bool CList_IsEmpty(CList instance);

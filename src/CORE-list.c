@@ -22,13 +22,49 @@ void CList_Create(CList *instance_ptr)
 void CList_Free(CList *instance_ptr) 
 {
     ListNode *iter = (*instance_ptr)->head;
+    ListNode *elementToFree = NULL;
     while (iter != NULL) 
     {
-        ListNode *elementToFree = iter;
+        elementToFree = iter;
         iter = iter->next;
         CORE_MemFree(elementToFree);
     }
     CORE_MemFree(*instance_ptr);
+}
+
+bool CList_Remove(CList instance, void *value)
+{
+    CORE_AssertPointer(value);
+
+    if (CList_IsEmpty(instance)) {
+        return false;
+    }
+
+    ListNode *iter = instance->head;
+    ListNode *prev_iter = NULL;
+    while (iter != NULL) 
+    {
+        if (iter->value != value) {
+            prev_iter = iter;
+            iter = iter->next;
+            continue;
+        }
+        
+        if (iter == instance->head) {
+            instance->head = iter->next;
+        }
+        if (iter == instance->tail) {
+            instance->tail = prev_iter;
+        }
+        if (prev_iter != NULL) {
+            prev_iter->next = iter->next;
+        }
+
+        CORE_MemFree(iter);
+        return true;
+    }
+
+    return false;
 }
 
 void CList_Append(CList instance, void *value) 
@@ -50,11 +86,7 @@ void CList_Append(CList instance, void *value)
 void CList_Prepend(CList instance, void *value) 
 {
     ListNode *new_node = _CreateListNode(value);
-    if (instance->head != NULL) 
-    {
-        new_node->next = instance->head;
-    }
-    
+    new_node->next = instance->head;
     instance->head = new_node;
     
     if (instance->tail == NULL) 
