@@ -14,12 +14,9 @@ static void _FindSubset(CDisjointSet instance, int value, int *subset)
 	int parent;
 
 
-	if ((parent = instance->map_child_to_parent[value]) != -1) 
-	{
+	if ((parent = instance->map_child_to_parent[value]) != -1) {
 		_FindSubset(instance, parent, subset);
-	} 
-	else 
-	{
+	} else {
 		*subset = value;
 	}
 }
