@@ -19,15 +19,13 @@
 #include "CORE-types.h"
 #include "CORE-object.h"
 
-CORE_OBJECT_DEFINE(CDisjointSet);
+typedef struct CDisjointSet_s CDisjointSet;
 
-void 		CDisjointSet_Print(CDisjointSet instance);
-bool 	    CDisjointSet_Union(CDisjointSet instance, int value1, int value2);
-void 		CDisjointSet_GetSubsetsCount(CDisjointSet instance, uint *subsets_count);
+void 		 CDisjointSet_Print(const CDisjointSet *dset);
+bool 	     CDisjointSet_Union(CDisjointSet *dset, int value1, int value2);
+void 		 CDisjointSet_GetSubsetsCount(const CDisjointSet *dset, uint *subsets_count);
 
-void 		CDisjointSet_Setup(CDisjointSet instance, uint size);
-
-void 		CDisjointSet_Create(CDisjointSet *instance_ptr);
-void 		CDisjointSet_Free(CDisjointSet *instance_ptr);
+CDisjointSet *CDisjointSet_Create(uint size);
+void 		 CDisjointSet_Free(CDisjointSet **dset);
 
 #endif

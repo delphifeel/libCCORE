@@ -10,11 +10,11 @@ typedef struct ListNode
     struct ListNode *next;
 } ListNode;
 
-typedef struct CList
+typedef struct CList_s
 {
     ListNode *head;
     ListNode *tail;
-} *CList;
+} CList;
 
 #define _CList_ForEach(CLIST, ITEM)                                                         \
     ListNode    *ITEM##_iter;                                                               \

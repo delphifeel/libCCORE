@@ -5,7 +5,7 @@
 #include "CORE-memory.h"
 
 
-struct CSlice 
+struct CSlice_s
 {
     void        **src_array;
     bool        src_array_alloced;

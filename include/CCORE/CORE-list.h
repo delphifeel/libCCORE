@@ -7,12 +7,12 @@
 
 #define CList_ForEach   _CList_ForEach
 
-bool CList_Remove(CList instance, void *value);
-void CList_Append(CList instance, void *value);
-void CList_Prepend(CList instance, void *value);
-bool CList_IsEmpty(CList instance);
+bool CList_Remove(CList *list, void *value);
+void CList_Append(CList *list, void *value);
+void CList_Prepend(CList *list, void *value);
+bool CList_IsEmpty(const CList *list);
 
-void CList_Create(CList *instance_ptr);
-void CList_Free(CList *instance_ptr);
+CList *CList_Create(void);
+void CList_Free(CList **list_ptr);
 
 #endif

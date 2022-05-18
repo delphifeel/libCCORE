@@ -11,36 +11,36 @@ static ListNode *_CreateListNode(void *value)
     return node;
 }
 
-void CList_Create(CList *instance_ptr)
+CList *CList_Create(void)
 {
-    *instance_ptr = CORE_MemAlloc(sizeof(struct CList), 1);
-    CList instance = *instance_ptr;
-    instance->head = NULL;
-    instance->tail = NULL;
+    CList *list = CORE_MemAlloc(sizeof(CList), 1);
+    list->head = NULL;
+    list->tail = NULL;
+    return list;
 }
 
-void CList_Free(CList *instance_ptr) 
+void CList_Free(CList **list_ptr) 
 {
-    ListNode *iter = (*instance_ptr)->head;
-    ListNode *elementToFree = NULL;
+    ListNode *iter = (*list_ptr)->head;
+    ListNode *element_to_free = NULL;
     while (iter != NULL) 
     {
-        elementToFree = iter;
+        element_to_free = iter;
         iter = iter->next;
-        CORE_MemFree(elementToFree);
+        CORE_MemFree(element_to_free);
     }
-    CORE_MemFree(*instance_ptr);
+    CORE_MemFree(*list_ptr);
 }
 
-bool CList_Remove(CList instance, void *value)
+bool CList_Remove(CList *list, void *value)
 {
     CORE_AssertPointer(value);
 
-    if (CList_IsEmpty(instance)) {
+    if (CList_IsEmpty(list)) {
         return false;
     }
 
-    ListNode *iter = instance->head;
+    ListNode *iter = list->head;
     ListNode *prev_iter = NULL;
     while (iter != NULL) 
     {
@@ -50,11 +50,11 @@ bool CList_Remove(CList instance, void *value)
             continue;
         }
         
-        if (iter == instance->head) {
-            instance->head = iter->next;
+        if (iter == list->head) {
+            list->head = iter->next;
         }
-        if (iter == instance->tail) {
-            instance->tail = prev_iter;
+        if (iter == list->tail) {
+            list->tail = prev_iter;
         }
         if (prev_iter != NULL) {
             prev_iter->next = iter->next;
@@ -67,35 +67,32 @@ bool CList_Remove(CList instance, void *value)
     return false;
 }
 
-void CList_Append(CList instance, void *value) 
+void CList_Append(CList *list, void *value) 
 {
     ListNode *new_node = _CreateListNode(value);
-    if (instance->head == NULL) 
-    {
-        instance->head = new_node;
+    if (list->head == NULL) {
+        list->head = new_node;
     }
     
-    if (instance->tail != NULL) 
-    {
-        instance->tail->next = new_node;
+    if (list->tail != NULL) {
+        list->tail->next = new_node;
     }
     
-    instance->tail = new_node;
+    list->tail = new_node;
 }
 
-void CList_Prepend(CList instance, void *value) 
+void CList_Prepend(CList *list, void *value) 
 {
     ListNode *new_node = _CreateListNode(value);
-    new_node->next = instance->head;
-    instance->head = new_node;
+    new_node->next = list->head;
+    list->head = new_node;
     
-    if (instance->tail == NULL) 
-    {
-        instance->tail = new_node;
+    if (list->tail == NULL) {
+        list->tail = new_node;
     }
 }
 
-bool CList_IsEmpty(CList instance) 
+bool CList_IsEmpty(const CList *list) 
 {
-    return (instance->head == NULL) && (instance->tail == NULL);
+    return (list->head == NULL) && (list->tail == NULL);
 }

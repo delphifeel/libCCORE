@@ -1,21 +1,22 @@
 #include "CCORE/CORE-disjoint-set.h"
 #include "CCORE/CORE-memory.h"
 
-CORE_OBJECT_INTERFACE(CDisjointSet,
-	uint 			map_child_to_parent_size;
+struct CDisjointSet_s
+{
+	uint 			child_to_parent_size;
 	uint 			subsets_count;
-	int 			*map_child_to_parent;
-);
+	int 			*child_to_parent;
+};
 
 /*****************************************************************************************************************************/
 
-static void _FindSubset(CDisjointSet instance, int value, int *subset)
+static void _FindSubset(const CDisjointSet *dset, int value, int *subset)
 {
 	int parent;
 
 
-	if ((parent = instance->map_child_to_parent[value]) != -1) {
-		_FindSubset(instance, parent, subset);
+	if ((parent = dset->child_to_parent[value]) != -1) {
+		_FindSubset(dset, parent, subset);
 	} else {
 		*subset = value;
 	}
@@ -23,16 +24,16 @@ static void _FindSubset(CDisjointSet instance, int value, int *subset)
 
 /*****************************************************************************************************************************/
 
-void CDisjointSet_Print(CDisjointSet instance)
+void CDisjointSet_Print(const CDisjointSet *dset)
 {
-	uint8 				processed_values[instance->map_child_to_parent_size];
+	uint8 				processed_values[dset->child_to_parent_size];
 	int 				current_parent;
 	uint 				i;
 
 
 	CORE_MemZero(processed_values, sizeof(processed_values));
 
-	for (i = 0; i < instance->map_child_to_parent_size; i++)
+	for (i = 0; i < dset->child_to_parent_size; i++)
 	{
 		if (processed_values[i] == 1) 
 		{
@@ -42,64 +43,63 @@ void CDisjointSet_Print(CDisjointSet instance)
 		current_parent = i;
 		processed_values[current_parent] = 1;
 
-		while (instance->map_child_to_parent[current_parent] != -1)
+		while (dset->child_to_parent[current_parent] != -1)
 		{
-			current_parent = instance->map_child_to_parent[current_parent];
+			current_parent = dset->child_to_parent[current_parent];
 			processed_values[current_parent] = 1;
 		}
 	}
 }
 
-bool CDisjointSet_Union(CDisjointSet instance, int value1, int value2)
+bool CDisjointSet_Union(CDisjointSet *dset, int value1, int value2)
 {
 	int value1_subset;
 	int value2_subset;
 
 
-	_FindSubset(instance, value1, &value1_subset);
-	_FindSubset(instance, value2, &value2_subset);
+	_FindSubset(dset, value1, &value1_subset);
+	_FindSubset(dset, value2, &value2_subset);
 
 	if (value1_subset == value2_subset) 
 	{
 		return false;
 	}
 
-	instance->map_child_to_parent[value1_subset] = value2_subset;
-	instance->subsets_count--;
+	dset->child_to_parent[value1_subset] = value2_subset;
+	dset->subsets_count--;
 
 	return true;
 }
 
-void CDisjointSet_GetSubsetsCount(CDisjointSet instance, uint *subsets_count)
+void CDisjointSet_GetSubsetsCount(const CDisjointSet *dset, uint *subsets_count)
 {
-	*subsets_count = instance->subsets_count;
+	*subsets_count = dset->subsets_count;
 }
 
 /*****************************************************************************************************************************/
 
-void CDisjointSet_Setup(CDisjointSet instance, uint size)
+static void _Setup(CDisjointSet *dset, uint size)
 {
-	instance->map_child_to_parent_size = size;
-	instance->subsets_count = size;
-	instance->map_child_to_parent = CORE_MemAlloc(sizeof(int), size);
-	CORE_MemSet(instance->map_child_to_parent, -1, sizeof(int) * size);
+	dset->child_to_parent_size = size;
+	dset->subsets_count = size;
+	dset->child_to_parent = CORE_MemAlloc(sizeof(int), size);
+	CORE_MemSet(dset->child_to_parent, -1, sizeof(int) * size);
 }
 
 /*****************************************************************************************************************************/
 
-void CDisjointSet_Create(CDisjointSet *instance_ptr)
+CDisjointSet *CDisjointSet_Create(uint size)
 {
-	CORE_OBJECT_CREATE(instance_ptr, CDisjointSet);
-
-	(*instance_ptr)->map_child_to_parent_size = 0;
-	(*instance_ptr)->map_child_to_parent = NULL;
-	(*instance_ptr)->subsets_count = 0;
+	CDisjointSet *dset = CORE_MemAlloc(sizeof(CDisjointSet), 1);
+	_Setup(dset, size);
+	return dset;
 }
 
-void CDisjointSet_Free(CDisjointSet *instance_ptr)
+void CDisjointSet_Free(CDisjointSet **dset)
 {
-	CORE_MemFree((*instance_ptr)->map_child_to_parent);
-	CORE_OBJECT_FREE(instance_ptr);
+	CDisjointSet *dset_value = *dset;
+	CORE_MemFree(dset_value->child_to_parent);
+	CORE_MemFree(dset_value);
 }
 
 /*****************************************************************************************************************************/

@@ -5,27 +5,29 @@
 #include "CORE-list.h"
 
 
-typedef struct CMap {
-    CList       *buckets;
+typedef struct CMap_s 
+{
+    CList       **buckets;
     uint64      buckets_count;
-    CList       all_bucket_nodes;
-} *CMap;
+    CList       *all_bucket_nodes;
+} CMap;
 
-typedef struct BucketNode {
+typedef struct BucketNode_s 
+{
     char        *key;
     uint        key_size;
     void        *value;
 } BucketNode;
 
-struct CMapIter
+struct CMapIter_s
 {
     ListNode *bucket_node_ptr;
 };
 
-extern void *_CMapIter_Next(struct CMapIter *iter);
+extern void *_CMapIter_Next(struct CMapIter_s *iter);
 
 #define _CMap_ForEach(MAP, ITEM)                                              \
-    struct CMapIter ITEM##_iter = {map->all_bucket_nodes->head};              \
+    struct CMapIter_s ITEM##_iter = {map->all_bucket_nodes->head};             \
     while (ITEM = _CMapIter_Next(&ITEM##_iter))      
 
 

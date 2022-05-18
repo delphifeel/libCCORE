@@ -2,10 +2,7 @@
 
 void TEST_List_Create() 
 {
-	CList list;
-
-
-	CList_Create(&list);
+	CList *list = CList_Create();
 
 	CORE_Assert(list != NULL);	
 	CORE_Assert(list->head == NULL);
@@ -15,10 +12,7 @@ void TEST_List_Create()
 }
 
 void TEST_List_Append() {
-	CList list;
-
-
-	CList_Create(&list);
+	CList *list = CList_Create();
 
 	// if first node - head and tail the same
 	int first_value = 333;
@@ -50,10 +44,7 @@ void TEST_List_Append() {
 }
 
 void TEST_List_Prepend() {
-	CList list;
-
-
-	CList_Create(&list);
+	CList *list = CList_Create();
 
 	// if first node - head and tail the same
 	int first_value = 444;
@@ -86,13 +77,10 @@ void TEST_List_Prepend() {
 
 void TEST_List_IsEmpty() 
 {
-	CList list;
-
-
-	CList_Create(&list);
+	CList *list = CList_Create();
 
 	// if head is NULL and tail is NULL - list is empty
-	CORE_Assert(CList_IsEmpty(list) == true);
+	CORE_Assert(CList_IsEmpty(list));
 	
 	// if head is NULL and tail is NOT NULL - list is NOT empty
 	int pseudo_tail_node_value = -333;
@@ -128,17 +116,14 @@ void TEST_List_Iterate() {
 	int second = 33;
 	int third  = 99;
 	int i 	   = 0;
-	CList list;
+	CList *list = CList_Create();
 
-
-	CList_Create(&list);
 	CList_Append(list, &first);
 	CList_Append(list, &second);
 	CList_Append(list, &third);
 
 	int *value_ptr;
-	CList_ForEach(list, value_ptr)
-	{
+	CList_ForEach(list, value_ptr) {
 		if 		(i == 0) 	CORE_Assert(value_ptr == &first);
 		else if (i == 1) 	CORE_Assert(value_ptr == &second);
 		else if (i == 2) 	CORE_Assert(value_ptr == &third);
@@ -152,18 +137,15 @@ void TEST_List_Iterate() {
 
 void TEST_List_Remove() {
 	int numbers[6] = {1, 2, 3, 4, 5, 6};
-	CList list;
+	CList *list = CList_Create();
 
-
-	CList_Create(&list);
 	for (int i = 0; i < 6; i++) {
 		CList_Append(list, numbers + i);
 	}
 
 	int *value_ptr;
 	int i = 0;
-	CList_ForEach(list, value_ptr)
-	{
+	CList_ForEach(list, value_ptr) {
 		CORE_Assert(value_ptr == numbers + i);
 		i++;
 	}

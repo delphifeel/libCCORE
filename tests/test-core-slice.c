@@ -3,12 +3,9 @@
 
 void TEST_Slice_Append(void) 
 {
-	CSlice slice;
+	CSlice *slice = CSlice_Create(10);
 	char *str1 = "Hello, ";
 	char *str2 = "World.";
-
-
-	CSlice_Create(&slice, 10);
 
 	CSlice_Append(slice, str1);
 	CSlice_Append(slice, str2);
@@ -24,9 +21,7 @@ void TEST_Slice_Append(void)
 
 void TEST_Slice_BigAppend(void)
 {
-	CSlice slice;
-
-	CSlice_Create(&slice, 10);
+	CSlice *slice = CSlice_Create(10);
 
 	char *loop_str = "THIS WILL BE LOOPED...";
 	for (int i = 0; i < 100; i++) 
@@ -48,11 +43,9 @@ void TEST_Slice_BigAppend(void)
 
 void TEST_Slice_ChangeValue(void)
 {
-	CSlice slice;
+	CSlice *slice = CSlice_Create(10);
 	int some_value = 666;
 	int some_new_value = -999;
-
-	CSlice_Create(&slice, 10);
 
 	CSlice_Append(slice, &some_value);
 	CSlice_Append(slice, &some_new_value);
@@ -71,11 +64,9 @@ void TEST_Slice_ChangeValue(void)
 
 void TEST_Slice_FromArray(void)
 {
-	CSlice 	slice;
 	#define arr_size 	(4)
 	void 	*arr[arr_size] = { (void *) -1, (void *) -2, (void *) 3, (void *) 44 };
-
-	CSlice_CreateFromArray(&slice, arr, arr_size, CSLICE_FROM_START, CSLICE_TO_THE_END);
+	CSlice *slice = CSlice_CreateFromArray(arr, arr_size, CSLICE_FROM_START, CSLICE_TO_THE_END);
 	
 	CORE_Assert(CSlice_Pop(slice) == arr[3]);
 	CORE_Assert(CSlice_Pop(slice) == arr[2]);
@@ -85,9 +76,8 @@ void TEST_Slice_FromArray(void)
 
 	CSlice_Free(&slice);
 
-	CSlice_CreateFromArray(&slice, arr, arr_size, 2, CSLICE_TO_THE_END);
-	CSlice slice_cpy;
-	CSlice_CreateFromSlice(&slice_cpy, slice, CSLICE_FROM_START, CSLICE_TO_THE_END);
+	slice = CSlice_CreateFromArray(arr, arr_size, 2, CSLICE_TO_THE_END);
+	CSlice *slice_cpy = CSlice_CreateFromSlice(slice, CSLICE_FROM_START, CSLICE_TO_THE_END);
 	for (uint i = 0; i < CSlice_Size(slice_cpy); i++) {
 		CORE_Assert(CSlice_Get(slice_cpy, i) == arr[i + 2]);
 		CORE_Assert(CSlice_Get(slice_cpy, i) == CSlice_Get(slice, i));

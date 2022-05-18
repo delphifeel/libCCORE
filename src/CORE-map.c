@@ -18,28 +18,26 @@ static void _FreeBucketNode(BucketNode *node)
     CORE_MemFree(node);
 }
 
-static CList _GetBucket(CMap map, const char *key, uint64 key_size) 
+static CList *_GetBucket(const CMap *map, const char *key, uint64 key_size) 
 {
     uint64 hash = SuperFastHash(key, key_size);
     uint64 bucket_index = hash % map->buckets_count; 
     return map->buckets[bucket_index];
 }
 
-static BucketNode *_FindBucketNode(CMap map, const char *key, uint64 key_size) 
+static BucketNode *_FindBucketNode(const CMap *map, const char *key, uint64 key_size) 
 {       
     BucketNode  *result = NULL;
-    CList       bucket  = _GetBucket(map, key, key_size);
+    CList       *bucket  = _GetBucket(map, key, key_size);
 
 
     BucketNode *node;
-    CList_ForEach(bucket, node)
-    {
+    CList_ForEach(bucket, node) {
         if (node->key_size != key_size) {
             continue;
         }
 
-        if (CORE_MemEqual(node->key, key, key_size)) 
-        {
+        if (CORE_MemEqual(node->key, key, key_size)) {
             result = node;
             break;
         }   
@@ -48,7 +46,7 @@ static BucketNode *_FindBucketNode(CMap map, const char *key, uint64 key_size)
     return result;
 }
 
-void *_CMapIter_Next(struct CMapIter *iter)
+void *_CMapIter_Next(struct CMapIter_s *iter)
 {
     if (iter->bucket_node_ptr == NULL) {
         return NULL;
@@ -59,58 +57,54 @@ void *_CMapIter_Next(struct CMapIter *iter)
     return bucket_node->value;
 }
 
-void CMap_Set(CMap map, const char *key, void *value) 
+void CMap_Set(CMap *map, const char *key, void *value) 
 {
-    uint64 key_size = CORE_StrLen(key);
-    BucketNode *bucket_node = _FindBucketNode(map, key, key_size);
-    if (bucket_node)
-    {
+    uint64      key_size        = CORE_StrLen(key);
+    BucketNode  *bucket_node    = _FindBucketNode(map, key, key_size);
+
+    if (bucket_node) {
         bucket_node->value = value;
         return;
     }
 
-    CList bucket = _GetBucket(map, key, key_size);
-    BucketNode *new_node = _CreateBucketNode(key, key_size, value); 
+    CList       *bucket      = _GetBucket(map, key, key_size);
+    BucketNode  *new_node    = _CreateBucketNode(key, key_size, value); 
 
     CList_Prepend(bucket, new_node);
     CList_Prepend(map->all_bucket_nodes, new_node);
 }
 
-void *CMap_Get(CMap map, const char *key) 
+void *CMap_Get(const CMap *map, const char *key) 
 {
     BucketNode *bucketNode = _FindBucketNode(map, key, CORE_StrLen(key));
     return bucketNode == NULL ? NULL : bucketNode->value;
 }
 
-void CMap_Create(CMap *map_ptr, uint64 map_size) 
+CMap *CMap_Create(uint64 map_size) 
 {
-    *map_ptr = CORE_MemAlloc(sizeof(struct CMap), 1);
-    CMap map = *map_ptr;
+    CMap *map    = CORE_MemAlloc(sizeof(CMap), 1);
     map->buckets = CORE_MemAlloc(sizeof(CList), map_size);
-    for (uint64 i = 0; i < map_size; i++) 
-    {
-        CList_Create(&map->buckets[i]);
+
+    for (uint64 i = 0; i < map_size; i++) {
+        map->buckets[i] = CList_Create();
     }
     map->buckets_count = map_size;
-    CList_Create(&map->all_bucket_nodes);
+    map->all_bucket_nodes = CList_Create();
 }
 
-void CMap_Free(CMap *map_ptr) 
+void CMap_Free(CMap **map_ptr) 
 {
-    CMap        map     = *map_ptr;
     BucketNode  *node;
+    CMap        *map = *map_ptr;
 
-    CList_ForEach(map->all_bucket_nodes, node)
-    {
+    CList_ForEach(map->all_bucket_nodes, node) {
         _FreeBucketNode(node);
     }
     CList_Free(&map->all_bucket_nodes);
 
-    for (uint64 i = 0; i < map->buckets_count; i++) 
-    {
+    for (uint64 i = 0; i < map->buckets_count; i++) {
         CList_Free(&map->buckets[i]);
     }
     CORE_MemFree(map->buckets);
-
     CORE_MemFree(*map_ptr);
 }
