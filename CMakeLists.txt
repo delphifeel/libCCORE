@@ -31,6 +31,7 @@ add_library(CCORE
 	src/CORE-list.c
 	src/CORE-map.c
 	src/CORE-slice.c
+	src/CORE-memory.c
 )
 
 target_include_directories(CCORE PUBLIC include)

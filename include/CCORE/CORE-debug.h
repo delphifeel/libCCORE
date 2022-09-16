@@ -44,25 +44,28 @@ static const char *_CORE_module_name = NULL;
 
 const char *CORE_GetModuleName(const char *file_name, const char *module_name);
 
-#define _CORE_DEBUG_MESSAGE_PRE(_TYPE, _TYPE_SYMBOL)									\
+#define _CORE_DEBUG_MESSAGE_PRE(_TYPE, _TYPE_SYMBOL, _FILE, _LINE)						\
 																						\
 			"%s[%s]%s %s(%s:%d)%s %s%s()%s ", 											\
 			(_TYPE_SYMBOL), 															\
 			(_TYPE), 																	\
 			_COREDEBUG_RESET_SYMBOL,													\
 			_COREDEBUG_FILE_SYMBOL,														\
-			CORE_GetModuleName(__FILE__, _CORE_module_name),							\
-			__LINE__, 																	\
+			CORE_GetModuleName(_FILE, _CORE_module_name),								\
+			_LINE, 																		\
 			_COREDEBUG_RESET_SYMBOL,													\
 			_COREDEBUG_FUNC_SYMBOL,														\
 			__func__,																	\
 			_COREDEBUG_RESET_SYMBOL														
 
 #define _CORE_DEBUG_PRINT(_TYPE, _TYPE_SYMBOL) 			\
-	(CORE_DebugStdOut(_CORE_DEBUG_MESSAGE_PRE(_TYPE, _TYPE_SYMBOL)))
+	(CORE_DebugStdOut(_CORE_DEBUG_MESSAGE_PRE(_TYPE, _TYPE_SYMBOL, __FILE__, __LINE__)))
 
 #define _CORE_DEBUG_ERROR(_TYPE, _TYPE_SYMBOL) 			\
-	(CORE_DebugStdErr(_CORE_DEBUG_MESSAGE_PRE(_TYPE, _TYPE_SYMBOL)))
+	(CORE_DebugStdErr(_CORE_DEBUG_MESSAGE_PRE(_TYPE, _TYPE_SYMBOL, __FILE__, __LINE__)))
+
+#define _CORE_DEBUG_ERROR_EX(_TYPE, _TYPE_SYMBOL, _FILE, _LINE) 			\
+	(CORE_DebugStdErr(_CORE_DEBUG_MESSAGE_PRE(_TYPE, _TYPE_SYMBOL, _FILE, _LINE)))
 
 
 /**
@@ -74,7 +77,13 @@ const char *CORE_GetModuleName(const char *file_name, const char *module_name);
  */
 #define CORE_Assert(EXPRESSION) 						(	(EXPRESSION) ? (void) true : (_CORE_DEBUG_ERROR("ASSERT FAILED", _COREDEBUG_ERROR_SYMBOL), CORE_DebugStdErr("%s\n", #EXPRESSION), abort())	)
 #define CORE_AssertWithMessage(EXPRESSION, ...) 		(	(EXPRESSION) ? (void) true : (_CORE_DEBUG_ERROR("ASSERT FAILED", _COREDEBUG_ERROR_SYMBOL), CORE_DebugStdErr(__VA_ARGS__), abort())	)
+
+#define CORE_AssertWithMessageEx(FILE, LINE, EXPRESSION, ...) \
+	(	(EXPRESSION) ? (void) true : (_CORE_DEBUG_ERROR_EX("ASSERT FAILED", _COREDEBUG_ERROR_SYMBOL, FILE, LINE), CORE_DebugStdErr(__VA_ARGS__), abort())	)
+
 #define CORE_AssertPointer(PTR) 						(	CORE_AssertWithMessage((PTR) != NULL, "`%s` is NULL\n", #PTR)	)
+#define CORE_AssertIntEqual(A, B) 						( CORE_AssertWithMessage(A == B, #A " == " #B " (%d vs %d)\n", A, B) )
+
 #define CORE_Abort(...) 								(	_CORE_DEBUG_ERROR("ABORT", _COREDEBUG_ERROR_SYMBOL), CORE_DebugStdErr(__VA_ARGS__), abort()	)
 
 /**

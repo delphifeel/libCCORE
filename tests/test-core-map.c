@@ -12,16 +12,16 @@ void TEST_Map_SetData(void)
     double value1 = 3.33;
     double value2 = 4.991;
 
-    CMap_Set(map, "rabbit", &value1);
-    CMap_Set(map, "wolf",  &value2);
+    CMap_Set(map, "rabbit", CORE_StrLen("rabbit"), &value1);
+    CMap_Set(map, "wolf", CORE_StrLen("wolf"), &value2);
 
-    CORE_Assert(CMap_Get(map, "rabbit") == &value1);
-    CORE_Assert(CMap_Get(map, "wolf") == &value2);
-    CORE_Assert(CMap_Get(map, "something that dont exists") == NULL);
+    CORE_Assert(CMap_Get(map, "rabbit", CORE_StrLen("rabbit")) == &value1);
+    CORE_Assert(CMap_Get(map, "wolf", CORE_StrLen("wolf")) == &value2);
+    CORE_Assert(CMap_Get(map, "something that dont exists", CORE_StrLen("something that dont exists")) == NULL);
 
     int new_value = 333;
-    CMap_Set(map, "wolf", &new_value);
-    CORE_Assert(CMap_Get(map, "wolf") == &new_value);
+    CMap_Set(map, "wolf", CORE_StrLen("wolf"), &new_value);
+    CORE_Assert(CMap_Get(map, "wolf", CORE_StrLen("wolf")) == &new_value);
 
     CMap_Free(&map);
 }
@@ -38,8 +38,8 @@ void TEST_Map_SetObjectData(void)
     far_left->x = 2;
     far_left->y = 4;
 
-    CMap_Set(map, "far left", far_left);
-    struct Coord *temp = CMap_Get(map, "far left");
+    CMap_Set(map, "far left", CORE_StrLen("far left"), far_left);
+    struct Coord *temp = CMap_Get(map, "far left", CORE_StrLen("far left"));
     CORE_Assert(
         (temp->x == far_left->x) &&
         (temp->y == far_left->y)
@@ -62,9 +62,9 @@ void TEST_Map_Iteration(void)
     uint bob_age = 44;
     uint error_code = 1;
 
-    CMap_Set(map, "bob_height", &bob_height);
-    CMap_Set(map, "bob_age", &bob_age);
-    CMap_Set(map, "error_code", &error_code);
+    CMap_Set(map, "bob_height", CORE_StrLen("bob_height"), &bob_height);
+    CMap_Set(map, "bob_age", CORE_StrLen("bob_age"), &bob_age);
+    CMap_Set(map, "error_code", CORE_StrLen("error_code"), &error_code);
 
     uint *value_ptr;
     CMap_ForEach(map, value_ptr) {
@@ -75,9 +75,9 @@ void TEST_Map_Iteration(void)
         );
     }
 
-    CORE_Assert(CMap_Get(map, "bob_height") == &bob_height);
-    CORE_Assert(CMap_Get(map, "bob_age") == &bob_age);
-    CORE_Assert(CMap_Get(map, "error_code") == &error_code);
+    CORE_Assert(CMap_Get(map, "bob_height", CORE_StrLen("bob_height")) == &bob_height);
+    CORE_Assert(CMap_Get(map, "bob_age", CORE_StrLen("bob_age")) == &bob_age);
+    CORE_Assert(CMap_Get(map, "error_code", CORE_StrLen("error_code")) == &error_code);
 
     CMap_Free(&map);
 }

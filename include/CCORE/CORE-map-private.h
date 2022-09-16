@@ -7,16 +7,16 @@
 
 typedef struct CMap_s 
 {
-    CList       **buckets;
+    CList     **buckets;
     uint64      buckets_count;
-    CList       *all_bucket_nodes;
+    CList      *all_bucket_nodes;
 } CMap;
 
 typedef struct BucketNode_s 
 {
-    char        *key;
+    uint8      *key;
     uint        key_size;
-    void        *value;
+    void       *value;
 } BucketNode;
 
 struct CMapIter_s

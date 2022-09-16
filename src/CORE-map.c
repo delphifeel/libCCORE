@@ -2,7 +2,7 @@
 #include "CCORE/CORE-map.h"
 #include "CCORE/super_fast_hash.h"
 
-static BucketNode *_CreateBucketNode(const char *key, uint64 key_size, void *value) 
+static BucketNode *_CreateBucketNode(const uint8 *key, uint key_size, void *value) 
 {
     BucketNode *bucketNode = CORE_MemAlloc(sizeof(BucketNode), 1);
     CORE_MemNewCopy(bucketNode->key, key, key_size);
@@ -18,14 +18,14 @@ static void _FreeBucketNode(BucketNode *node)
     CORE_MemFree(node);
 }
 
-static CList *_GetBucket(const CMap *map, const char *key, uint64 key_size) 
+static CList *_GetBucket(const CMap *map, const uint8 *key, uint key_size) 
 {
-    uint64 hash = SuperFastHash(key, key_size);
+    uint64 hash = SuperFastHash((const char *) key, key_size);
     uint64 bucket_index = hash % map->buckets_count; 
     return map->buckets[bucket_index];
 }
 
-static BucketNode *_FindBucketNode(const CMap *map, const char *key, uint64 key_size) 
+static BucketNode *_FindBucketNode(const CMap *map, const uint8 *key, uint key_size) 
 {       
     BucketNode  *result = NULL;
     CList       *bucket  = _GetBucket(map, key, key_size);
@@ -57,10 +57,9 @@ void *_CMapIter_Next(struct CMapIter_s *iter)
     return bucket_node->value;
 }
 
-void CMap_Set(CMap *map, const char *key, void *value) 
+void CMap_Set(CMap *map, const uint8 *key, uint key_size, void *value) 
 {
-    uint64      key_size        = CORE_StrLen(key);
-    BucketNode  *bucket_node    = _FindBucketNode(map, key, key_size);
+    BucketNode  *bucket_node  = _FindBucketNode(map, key, key_size);
 
     if (bucket_node) {
         bucket_node->value = value;
@@ -74,9 +73,9 @@ void CMap_Set(CMap *map, const char *key, void *value)
     CList_Prepend(map->all_bucket_nodes, new_node);
 }
 
-void *CMap_Get(const CMap *map, const char *key) 
+void *CMap_Get(const CMap *map, const uint8 *key, uint key_size) 
 {
-    BucketNode *bucketNode = _FindBucketNode(map, key, CORE_StrLen(key));
+    BucketNode *bucketNode = _FindBucketNode(map, key, key_size);
     return bucketNode == NULL ? NULL : bucketNode->value;
 }
 
@@ -90,6 +89,7 @@ CMap *CMap_Create(uint64 map_size)
     }
     map->buckets_count = map_size;
     map->all_bucket_nodes = CList_Create();
+    return map;
 }
 
 void CMap_Free(CMap **map_ptr) 
