@@ -61,13 +61,10 @@ static void Test_FromAllocedArray(void)
 		const char 	*name;
 	};
 
-
-	struct Man *man_list;
 	struct Man bob = {22, "Bob"};
 	struct Man sammy = {40, "Sammy"};
 
-
-	man_list = CORE_MemAlloc(sizeof(struct Man), 2);
+	struct Man *man_list = CORE_MemAlloc(sizeof(struct Man), 2);
 	CSafeArray_From(man_list, 2, 0);
 	CSafeArray_Add(man_list, bob);
 	CSafeArray_Add(man_list, sammy);
