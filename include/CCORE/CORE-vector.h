@@ -19,6 +19,7 @@
   
 #define CVector_Init(_VECTOR, _CAP)                                       \
   (_VECTOR)->array = CORE_MemAlloc(_CVector_SizeOfItem(_VECTOR), _CAP);   \
+  CORE_AssertWithMessage((_VECTOR)->array != NULL, "Out of memory bro\n"); \
   (_VECTOR)->size = 0;                                                    \
   (_VECTOR)->cap = _CAP;
   
@@ -27,10 +28,10 @@
   (_VECTOR)->array = NULL;
   
 #define CVector_Push(_VECTOR, _VALUE)         \
-  CORE_AssertWithMessage(                     \
-    (_VECTOR)->array != NULL,                 \
-    "CVector array is NULL. You forgot to call CVector_Init ?\n"  \
-  );                                          \
+  // CORE_AssertWithMessage(                     \
+  //   (_VECTOR)->array != NULL,                 \
+  //   "CVector array is NULL. You forgot to call CVector_Init ?\n"  \
+  // );                                          \
   if ((_VECTOR)->size == (_VECTOR)->cap) {    \
     (_VECTOR)->cap = (_VECTOR)->cap * 2 + 1;  \
     (_VECTOR)->array = CORE_MemRealloc(       \

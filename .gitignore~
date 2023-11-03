@@ -1,7 +1,6 @@
 libccore-tests
 build
 .vs
-.vscode
 
 # Prerequisites
 *.d

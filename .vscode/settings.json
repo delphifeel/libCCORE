@@ -2,6 +2,7 @@
     "files.associations": {
         "core-memory.h": "c",
         "core-vector.h": "c",
-        "ccore.h": "c"
+        "ccore.h": "c",
+        "core-debug.h": "c"
     }
 }
