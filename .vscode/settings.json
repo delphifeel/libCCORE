@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "core-memory.h": "c",
+        "core-vector.h": "c"
+    }
+}

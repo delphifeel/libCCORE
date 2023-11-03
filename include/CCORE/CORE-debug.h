@@ -39,23 +39,48 @@
 #define CORE_DebugStdErr(...) 	fprintf(stderr, __VA_ARGS__)
 
 
-static const char *_CORE_module_name = NULL;
+// static const char *_CORE_module_name = NULL;
+// #define CORE_GetModuleName(file_name, module_name)
+// {
+// 	if (module_name == NULL)
+// 	{
+// 		const char *temp_ptr = file_name;
+// 		while (*temp_ptr != 0)
+// 		{
+// 			if ((*temp_ptr == '/') ||
+// 				(*temp_ptr == '\\'))
+// 			{
+// 				module_name = temp_ptr;
+// 			}
 
-const char *CORE_GetModuleName(const char *file_name, const char *module_name);
+// 			temp_ptr++;
+// 		}
 
-#define _CORE_DEBUG_MESSAGE_PRE(_TYPE, _TYPE_SYMBOL, _FILE, _LINE)						\
-																						\
-			"%s[%s]%s %s(%s:%d)%s %s%s()%s ", 											\
-			(_TYPE_SYMBOL), 															\
-			(_TYPE), 																	\
-			_COREDEBUG_RESET_SYMBOL,													\
-			_COREDEBUG_FILE_SYMBOL,														\
-			CORE_GetModuleName(_FILE, _CORE_module_name),								\
-			_LINE, 																		\
-			_COREDEBUG_RESET_SYMBOL,													\
-			_COREDEBUG_FUNC_SYMBOL,														\
-			__func__,																	\
-			_COREDEBUG_RESET_SYMBOL														
+// 		if (module_name == NULL)
+// 		{
+// 			module_name = file_name;
+// 		}
+// 		else
+// 		{
+// 			module_name++;
+// 		}
+// 	}
+
+// 	return module_name;
+// }
+
+#define _CORE_DEBUG_MESSAGE_PRE(_TYPE, _TYPE_SYMBOL, _FILE, _LINE)				\
+	"%s[%s]%s %s(%s:%d)%s %s%s()%s ", 											\
+	(_TYPE_SYMBOL), 															\
+	(_TYPE), 																	\
+	_COREDEBUG_RESET_SYMBOL,													\
+	_COREDEBUG_FILE_SYMBOL,														\
+	_FILE,	                                            						\
+	_LINE, 																		\
+	_COREDEBUG_RESET_SYMBOL,													\
+	_COREDEBUG_FUNC_SYMBOL,														\
+	__func__,																	\
+	_COREDEBUG_RESET_SYMBOL														
 
 #define _CORE_DEBUG_PRINT(_TYPE, _TYPE_SYMBOL) 			\
 	(CORE_DebugStdOut(_CORE_DEBUG_MESSAGE_PRE(_TYPE, _TYPE_SYMBOL, __FILE__, __LINE__)))

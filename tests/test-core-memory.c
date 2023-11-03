@@ -1,6 +1,4 @@
-#include "CCORE.h"
-
-static void TEST_Allocations(void)
+void test_core_memory(void)
 {
     // alloc
     int *a = CORE_MemAlloc(sizeof(int), 1);
@@ -21,10 +19,4 @@ static void TEST_Allocations(void)
 
     // free
     CORE_MemFree(b);
-}
-
-int main()
-{
-    TEST_Allocations();
-    return 0;
 }
