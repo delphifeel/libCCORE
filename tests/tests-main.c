@@ -1,5 +1,3 @@
-#include "../include/CCORE.h"
-
 #include "test-core-memory.c"
 #include "test-core-vector.c"
 

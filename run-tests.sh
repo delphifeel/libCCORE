@@ -1,1 +1,1 @@
-cc -I include -o libccore-tests tests/tests-main.c && ./libccore-tests
+cc -I include -g -o libccore-tests tests/tests-main.c && ./libccore-tests

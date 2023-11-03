@@ -27,6 +27,10 @@
   (_VECTOR)->array = NULL;
   
 #define CVector_Push(_VECTOR, _VALUE)         \
+  CORE_AssertWithMessage(                     \
+    (_VECTOR)->array != NULL,                 \
+    "CVector array is NULL. You forgot to call CVector_Init ?\n"  \
+  );                                          \
   if ((_VECTOR)->size == (_VECTOR)->cap) {    \
     (_VECTOR)->cap = (_VECTOR)->cap * 2 + 1;  \
     (_VECTOR)->array = CORE_MemRealloc(       \
@@ -46,9 +50,15 @@
 #define CVector_GetPtr(_VECTOR, _INDEX) \
   (_CVector_GetPtr(_VECTOR, _INDEX))
 
+#define CVector_Get(_VECTOR, _INDEX) \
+  (                                                                             \
+    CORE_AssertWithMessage(_INDEX < (_VECTOR)->size, "Index out of bounds\n"),  \
+    (_VECTOR)->array[_INDEX]                                                    \
+  )  
+
 #define CVector_Pop(_VECTOR)                                                  \
   (                                                                           \
-    CORE_AssertWithMessage((_VECTOR)->size > 0, "Index out of bounds\n"),     \
+    CORE_AssertWithMessage((_VECTOR)->size > 0, "Vector is empty\n"),         \
     (_VECTOR)->size--,                                                        \
     (_VECTOR)->array[(_VECTOR)->size]                                         \
   )

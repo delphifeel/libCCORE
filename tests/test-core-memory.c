@@ -1,3 +1,5 @@
+#include "CCORE.h"
+
 void test_core_memory(void)
 {
     // alloc
