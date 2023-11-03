@@ -18,6 +18,10 @@
 	#define CORE_TESTING_ENABLED
 #endif
 
+#ifdef CORE_SET_UNSAFE_RELEASE
+	#define CORE_UNSAFE_RELEASE
+#endif
+
 #ifndef CORE_SET_DEBUG_COLORED
 	#define _COREDEBUG_FUNC_SYMBOL			("")
 	#define _COREDEBUG_INFO_SYMBOL			("")
@@ -99,16 +103,28 @@
  * |___________________________________________________________________________________________________________| 
  * 
  */
-#define CORE_Assert(EXPRESSION) 						(	(EXPRESSION) ? (void) true : (_CORE_DEBUG_ERROR("ASSERT FAILED", _COREDEBUG_ERROR_SYMBOL), CORE_DebugStdErr("%s\n", #EXPRESSION), abort())	)
-#define CORE_AssertWithMessage(EXPRESSION, ...) 		(	(EXPRESSION) ? (void) true : (_CORE_DEBUG_ERROR("ASSERT FAILED", _COREDEBUG_ERROR_SYMBOL), CORE_DebugStdErr(__VA_ARGS__), abort())	)
+#ifdef CORE_UNSAFE_RELEASE
+	#define CORE_Assert(EXPRESSION)  ((void) 0)						
+	#define CORE_AssertWithMessage(EXPRESSION, ...)  ((void) 0)	
 
-#define CORE_AssertWithMessageEx(FILE, LINE, EXPRESSION, ...) \
-	(	(EXPRESSION) ? (void) true : (_CORE_DEBUG_ERROR_EX("ASSERT FAILED", _COREDEBUG_ERROR_SYMBOL, FILE, LINE), CORE_DebugStdErr(__VA_ARGS__), abort())	)
+	#define CORE_AssertWithMessageEx(FILE, LINE, EXPRESSION, ...) ((void) 0)
 
-#define CORE_AssertPointer(PTR) 						(	CORE_AssertWithMessage((PTR) != NULL, "`%s` is NULL\n", #PTR)	)
-#define CORE_AssertIntEqual(A, B) 						( CORE_AssertWithMessage(A == B, #A " == " #B " (%d vs %d)\n", A, B) )
+	#define CORE_AssertPointer(PTR)     ((void) 0)
+	#define CORE_AssertIntEqual(A, B) 	((void) 0)
 
-#define CORE_Abort(...) 								(	_CORE_DEBUG_ERROR("ABORT", _COREDEBUG_ERROR_SYMBOL), CORE_DebugStdErr(__VA_ARGS__), abort()	)
+	#define CORE_Abort(...) 	( abort() )
+#else
+	#define CORE_Assert(EXPRESSION) 						(	(EXPRESSION) ? (void) true : (_CORE_DEBUG_ERROR("ASSERT FAILED", _COREDEBUG_ERROR_SYMBOL), CORE_DebugStdErr("%s\n", #EXPRESSION), abort())	)
+	#define CORE_AssertWithMessage(EXPRESSION, ...) 		(	(EXPRESSION) ? (void) true : (_CORE_DEBUG_ERROR("ASSERT FAILED", _COREDEBUG_ERROR_SYMBOL), CORE_DebugStdErr(__VA_ARGS__), abort())	)
+
+	#define CORE_AssertWithMessageEx(FILE, LINE, EXPRESSION, ...) \
+		(	(EXPRESSION) ? (void) true : (_CORE_DEBUG_ERROR_EX("ASSERT FAILED", _COREDEBUG_ERROR_SYMBOL, FILE, LINE), CORE_DebugStdErr(__VA_ARGS__), abort())	)
+
+	#define CORE_AssertPointer(PTR) 						(	CORE_AssertWithMessage((PTR) != NULL, "`%s` is NULL\n", #PTR)	)
+	#define CORE_AssertIntEqual(A, B) 						( CORE_AssertWithMessage(A == B, #A " == " #B " (%d vs %d)\n", A, B) )
+
+	#define CORE_Abort(...) 								(	_CORE_DEBUG_ERROR("ABORT", _COREDEBUG_ERROR_SYMBOL), CORE_DebugStdErr(__VA_ARGS__), abort()	)
+#endif
 
 /**
  *  ___________________________________________________________________________________________________________

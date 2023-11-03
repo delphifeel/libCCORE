@@ -10,8 +10,15 @@
 #define CVector_Define(_TYPE)   \
   typedef struct {              \
     _TYPE *array;               \
-    uint  size;                 \
-    uint  cap;                  \
+    uint size;                 \
+    uint cap;             \
+  }  _CVectorNewType(_TYPE)
+
+#define CVector_DefineBig(_TYPE)   \
+  typedef struct {              \
+    _TYPE *array;               \
+    uint64  size;                 \
+    uint64  cap;                  \
   }  _CVectorNewType(_TYPE)
   
 #define CVector(_TYPE)  \
