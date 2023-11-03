@@ -16,8 +16,7 @@
 #ifndef _CORE_DISJOINT_SET_H_
 #define _CORE_DISJOINT_SET_H_
 
-#include "CORE-types.h"
-#include "CORE-object.h"
+#include "CCORE/CORE-types.h"
 
 typedef struct CDisjointSet_s CDisjointSet;
 

@@ -19,8 +19,7 @@ static void TEST_Allocations(void)
     b[0] = 66;
     CORE_AssertIntEqual(b[0], 66);
 
-    // fre
-    CORE_MemFree(b);
+    // free
     CORE_MemFree(b);
 }
 

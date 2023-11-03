@@ -1,4 +1,4 @@
-#include "CCORE/CORE-disjoint-set.h"
+#include "CORE-disjoint-set.h"
 #include "CCORE/CORE-memory.h"
 
 struct CDisjointSet_s
