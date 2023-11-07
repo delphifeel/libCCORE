@@ -8,5 +8,8 @@
 #define CORE_StrCpy(DEST, DEST_SIZE, SRC)       (CORE_StrPrintf(DEST, DEST_SIZE, "%s", SRC))
 #define CORE_StrEqual(STR1, STR2)               (strcmp(STR1, STR2) == 0)
 #define CORE_StrLen(STR1)                       (strlen(STR1))
+#define CORE_StrNewCopy(DEST, STR, STR_SIZE) \
+    CORE_MemNewCopy(DEST, STR, STR_SIZE);    \
+    DEST[STR_SIZE] = 0;
 
 #endif

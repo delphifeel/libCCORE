@@ -24,9 +24,9 @@
 #define CORE_MemCmp(A, B, SIZE)                     (memcmp(A, B, SIZE) == 0)
 #define CORE_MemEqual(PTR1, PTR2, SIZE)             (memcmp(PTR1, PTR2, SIZE) == 0)
 
-#define CORE_MemNewCopy(DEST, SRC, SRC_SIZE)   do {     \
-    DEST = CORE_MemAlloc(SRC_SIZE, 1);                  \
-    CORE_MemCpy(DEST, SRC, SRC_SIZE);                   \
-} while (0)
+#define CORE_MemNewCopy(DEST, SRC, SRC_SIZE)      \
+    DEST = CORE_MemAlloc((SRC_SIZE), 1);          \
+    CORE_MemCpy(DEST, SRC, (SRC_SIZE));                   
+ 
 
 #endif

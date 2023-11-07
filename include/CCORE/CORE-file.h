@@ -1,13 +1,14 @@
 #ifndef _CORE_FILE_H_
 #define _CORE_FILE_H_
 
-#include <stdio.h>
-
-#define CFile_Open              fopen
-#define CFile_Close             fclose
-#define CFile_Read              fread
-#define CFile_Write             fwrite
-
-typedef FILE* CFile;
+#define CORE_AppendToFile(FILE_NAME, BUFF, BUFF_SIZE) do {  \
+    FILE *f = fopen(FILE_NAME,"ab");                    \
+    if (!f) {                                                \
+        CORE_DebugStdErr("Error open file %s\n", FILE_NAME); \
+        break;                                               \
+    }                                                        \
+    fwrite(BUFF, BUFF_SIZE, 1, f);                          \
+    fclose(f);                                             \
+} while (0)
 
 #endif
