@@ -11,5 +11,28 @@
 #define CORE_StrNewCopy(DEST, STR, STR_SIZE) \
     CORE_MemNewCopy(DEST, STR, STR_SIZE);    \
     DEST[STR_SIZE] = 0;
+	
+const char *CORE_StrFindEnd(const char *str, uint str_len, const char *substr, uint substr_len);
+
+#ifdef CCORE_IMPL
+const char *CORE_StrFindEnd(const char *str, uint str_len, const char *substr, uint substr_len)
+{
+    ssize_t start = -1;
+    for (uint i = 0; i < str_len; i++) {
+        if (str[i] == substr[0]) {
+            start = i;
+            break;
+        }
+    }
+    if (start == -1) {
+        return NULL;
+    }
+
+    if (0 == strncmp(str + start, substr, substr_len)) {
+        return str + start + substr_len;
+    }
+    return NULL;
+}
+#endif
 
 #endif
