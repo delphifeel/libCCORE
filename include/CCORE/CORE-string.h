@@ -17,19 +17,12 @@ const char *CORE_StrFindEnd(const char *str, uint str_len, const char *substr, u
 #ifdef CCORE_IMPL
 const char *CORE_StrFindEnd(const char *str, uint str_len, const char *substr, uint substr_len)
 {
-    ssize_t start = -1;
-    for (uint i = 0; i < str_len; i++) {
-        if (str[i] == substr[0]) {
-            start = i;
-            break;
+    const char *str_pos = str;
+    while (*str_pos != 0) {
+        if (0 == strncmp(str_pos, substr, substr_len)) {
+            return str_pos + substr_len;
         }
-    }
-    if (start == -1) {
-        return NULL;
-    }
-
-    if (0 == strncmp(str + start, substr, substr_len)) {
-        return str + start + substr_len;
+        str_pos++;
     }
     return NULL;
 }
