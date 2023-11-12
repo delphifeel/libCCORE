@@ -7,7 +7,7 @@ void test_core_vector(void)
     CVector_Define(int);
 
     // init vector
-    CVector(int) v;
+    CVector(uint) v;
     CVector_Init(&v, 0);
 
     // push

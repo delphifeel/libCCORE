@@ -82,4 +82,10 @@
   printf("]");                                  \
 }
 
+// basic vectors
+typedef char* string;
+CVector_Define(string);
+CVector_Define(uint);
+CVector_Define(int);
+
 #endif

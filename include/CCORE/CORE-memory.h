@@ -21,7 +21,6 @@
 #define CORE_MemZero(PTR, SIZE)		                CORE_MemSet(PTR, 0, SIZE)
 
 #define CORE_MemCpy                                 memcpy
-#define CORE_MemCmp(A, B, SIZE)                     (memcmp(A, B, SIZE) == 0)
 #define CORE_MemEqual(PTR1, PTR2, SIZE)             (memcmp(PTR1, PTR2, SIZE) == 0)
 
 #define CORE_MemNewCopy(DEST, SRC, SRC_SIZE)      \

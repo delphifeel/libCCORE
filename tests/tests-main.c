@@ -6,12 +6,12 @@
 
 int main()
 {
-    CORE_DebugStdOut("Running libCCORE tests .");
+    // CORE_DebugStdOut("Running libCCORE tests .");
     test_core_memory();
-    CORE_DebugStdOut(".");
+    // CORE_DebugStdOut(".");
     test_core_vector();
-    CORE_DebugStdOut(".");
+    // CORE_DebugStdOut(".");
     test_core_string();
-    CORE_DebugStdOut(". PASS\n");
+    // CORE_DebugStdOut(". PASS\n");
     return 0;
 }

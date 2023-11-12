@@ -2,6 +2,7 @@
 #define _CORE_STRING_H_
 
 #include "CORE-types.h"
+#include <ctype.h>
 
 // --> Macroses
 #define CORE_StrPrintf(DEST, DEST_SIZE, ...)	(snprintf(DEST, DEST_SIZE, __VA_ARGS__))
@@ -13,6 +14,19 @@
     CORE_MemNewCopy(DEST, STR, STR_SIZE);    \
     DEST[STR_SIZE] = 0;
 
+#define CORE_BuffPrint(STR, STR_LEN) do {    \
+    printf("[");                            \
+    for (uint i = 0; i < (STR_LEN); i++) {  \
+        printf("%c", (STR)[i]);     \
+    }                                       \
+    printf("]");                            \
+} while (0)
+
+#define CORE_BuffInit(BUFF_NAME, SRC_STR)           \
+    char BUFF_NAME[CORE_StrLen(SRC_STR) + 1];       \
+    CORE_MemCpy(BUFF_NAME, SRC_STR, sizeof(BUFF_NAME) - 1);  \
+    BUFF_NAME[sizeof(BUFF_NAME) - 1] = 0
+
 // Macroses -->
 
 
@@ -23,14 +37,74 @@ typedef struct {
 
 
 // --> Definition
+bool CORE_CharOneOf(char c, const char *chars, uint chars_len);
+char *CORE_StrTrim(char *str);
+CRecords CORE_StrSplitToRecords(char *str, const char *fields_separators, char record_separator);
 const char *CORE_StrFindEnd(const char *str, uint str_len, const char *substr, uint substr_len);
 void CORE_StrDelSpaces(char *str, uint str_len);
 uint CORE_StrFindInside(const char *str, uint str_len, const char *expr, CMatch matches[], uint matches_size);
+bool CORE_StrOneOf(const char *str, const char **list, uint list_len);
 // Definition -->
 
 
 // --> Implementation
 #ifdef CCORE_IMPL
+#define _STR_SPLIT_DEF_VEC_SIZE (10)
+CRecords CORE_StrSplitToRecords(char *str, const char *fields_separators, char record_separator)
+{
+    CVector(CRecord) records;
+    CVector_Init(&records, _STR_SPLIT_DEF_VEC_SIZE);
+
+    uint fields_separators_count = CORE_StrLen(fields_separators);
+    CVector(string) curr_fields;
+    CVector_Init(&curr_fields, _STR_SPLIT_DEF_VEC_SIZE);
+    CVector_Push(&curr_fields, CORE_StrTrim(str));
+    char c = 0;
+    while ((c = *str) != 0) {
+        if (CORE_CharOneOf(c, fields_separators, fields_separators_count)) {
+            *str = '\0';
+            CVector_Push(&curr_fields, CORE_StrTrim(str + 1));
+            str++;
+            continue;
+        }
+        if (c == record_separator) {
+            *str = '\0';
+            CRecord record = {curr_fields};
+            CVector_Push(&records, record);
+            CVector_Init(&curr_fields, _STR_SPLIT_DEF_VEC_SIZE);
+            CVector_Push(&curr_fields, CORE_StrTrim(str + 1));
+            str++;
+            continue;
+        }
+        str++;
+    }
+    CVector_Push(&curr_fields, CORE_StrTrim(str + 1));
+    CRecord record = {curr_fields};
+    CVector_Push(&records, record);
+
+    return records;
+}
+
+bool CORE_CharOneOf(char c, const char *chars, uint chars_len)
+{
+    for (uint i = 0; i < chars_len; i++) {
+        if (c == chars[i]) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool CORE_StrOneOf(const char *str, const char **list, uint list_len)
+{
+    for (uint i = 0; i < list_len; i++) {
+        if (CORE_StrEqual(str, list[i])) {
+            return true;
+        }
+    }
+    return false;
+}
+
 const char *CORE_StrFindEnd(const char *str, uint str_len, const char *substr, uint substr_len)
 {
     const char *str_pos = str;
@@ -41,6 +115,26 @@ const char *CORE_StrFindEnd(const char *str, uint str_len, const char *substr, u
         str_pos++;
     }
     return NULL;
+}
+
+char *CORE_StrTrim(char *str)
+{
+    char *end;
+
+    // Trim leading space
+    while(isspace((unsigned char)*str)) str++;
+
+    if(*str == 0)  // All spaces?
+        return str;
+
+    // Trim trailing space
+    end = str + strlen(str) - 1;
+    while(end > str && isspace((unsigned char)*end)) end--;
+
+    // Write new null terminator character
+    end[1] = '\0';
+
+    return str;
 }
 
 void CORE_StrDelSpaces(char *str, uint str_len)
@@ -88,8 +182,8 @@ uint CORE_StrFindInside(const char *str, uint str_len, const char *expr, CMatch 
         if (token == NULL) 
             return matches_count;
 
-        
-        str = CORE_StrFindEnd(str, str_end - str, token, CORE_StrLen(token));
+        uint token_len = CORE_StrLen(token);
+        str = CORE_StrFindEnd(str, str_end - str, token, token_len);
         if (str == NULL) {
             return matches_count;
         }
@@ -98,7 +192,7 @@ uint CORE_StrFindInside(const char *str, uint str_len, const char *expr, CMatch 
         }
 
         matches[matches_count].str = str_start;
-        matches[matches_count].len = str - 1 - str_start;
+        matches[matches_count].len = str - token_len - str_start;
         matches_count++;
 
         str_start = str;

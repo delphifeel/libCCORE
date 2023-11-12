@@ -6,6 +6,7 @@ void test_core_memory(void)
     int *a = CORE_MemAlloc(sizeof(int), 1);
     *a = 10;
     CORE_AssertIntEqual(*a, 10);
+    CORE_MemFree(a);
 
     // calloc
     int *b = CORE_MemCalloc(sizeof(int), 3);

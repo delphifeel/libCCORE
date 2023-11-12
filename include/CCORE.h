@@ -4,6 +4,7 @@
 #include "CCORE/CORE-types.h"
 #include "CCORE/CORE-debug.h"
 #include "CCORE/CORE-memory.h"
+#include "CCORE/CORE-records.h"
 #include "CCORE/CORE-string.h"
 #include "CCORE/CORE-file.h"
 #include "CCORE/CORE-vector.h"
