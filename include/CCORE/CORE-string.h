@@ -6,8 +6,11 @@
 
 // --> Macroses
 #define CORE_StrPrintf(DEST, DEST_SIZE, ...)	(snprintf(DEST, DEST_SIZE, __VA_ARGS__))
-#define CORE_StrCat(DEST, DEST_SIZE, SRC)       (strncat(DEST, SRC, (DEST_SIZE - 1)))
 #define CORE_StrCpy(DEST, DEST_SIZE, SRC)       (CORE_StrPrintf(DEST, DEST_SIZE, "%s", SRC))
+#define CORE_StrCat(DEST, DEST_SIZE, DEST_LEN, SRC)  \
+    DEST_LEN += CORE_StrCpy((DEST) + (DEST_LEN), (DEST_SIZE) - (DEST_LEN), SRC);  \
+    if (((DEST_LEN) + 1) > (DEST_SIZE))   DEST_LEN = DEST_SIZE - 1;
+
 #define CORE_StrEqual(STR1, STR2)               (strcmp(STR1, STR2) == 0)
 #define CORE_StrLen(STR1)                       (strlen(STR1))
 #define CORE_StrNewCopy(DEST, STR, STR_SIZE) \
@@ -42,7 +45,7 @@ char *CORE_StrTrim(char *str);
 CRecords CORE_StrSplitToRecords(char *str, const char *fields_separators, char record_separator);
 const char *CORE_StrFindEnd(const char *str, uint str_len, const char *substr, uint substr_len);
 void CORE_StrDelSpaces(char *str, uint str_len);
-uint CORE_StrFindInside(const char *str, uint str_len, const char *expr, CMatch matches[], uint matches_size);
+//uint CORE_StrFindInside(const char *str, uint str_len, const char *expr, CMatch matches[], uint matches_size);
 bool CORE_StrOneOf(const char *str, const char **list, uint list_len);
 // Definition -->
 
@@ -141,20 +144,22 @@ void CORE_StrDelSpaces(char *str, uint str_len)
 {
     char buff[str_len+1];
     buff[0] = 0;
+    uint buff_len = 0;
 
     char *token = strtok(str, " ");
-    CORE_StrCat(buff, sizeof(buff), token);
+    CORE_StrCat(buff, sizeof(buff), buff_len, token);
     while (1) {
         token = strtok(NULL, " ");
         if (token == NULL) 
             break;
-        CORE_StrCat(buff, sizeof(buff), token);
+        CORE_StrCat(buff, sizeof(buff), buff_len, token);
     }
     CORE_StrCpy(str, str_len, buff);
 }
 
 // ex: `#include    "*"   ` means get 1 match inside ""
-uint CORE_StrFindInside(const char *str, uint str_len, const char *expr, CMatch matches[], uint matches_size)
+// TODO (delphifeel): it doesn't work as intended
+/*uint CORE_StrFindInside(const char *str, uint str_len, const char *expr, CMatch matches[], uint matches_size)
 {
     uint expr_len = CORE_StrLen(expr);
     char expr_mut[expr_len + 1];
@@ -199,7 +204,7 @@ uint CORE_StrFindInside(const char *str, uint str_len, const char *expr, CMatch 
     }
 
     return matches_count;
-}
+}*/
 #endif
 // Implementation -->
 
