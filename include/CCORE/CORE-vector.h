@@ -70,6 +70,18 @@
     (_VECTOR)->size--,                                                        \
     (_VECTOR)->array[(_VECTOR)->size]                                         \
   )
+
+#define CVector_Last(_VECTOR)                                                 \
+  (                                                                           \
+    CORE_AssertWithMessage((_VECTOR)->size > 0, "Vector is empty\n"),         \
+    (_VECTOR)->array[(_VECTOR)->size - 1]                                     \
+  )
+
+#define CVector_LastPtr(_VECTOR)                                              \
+  (                                                                           \
+    CORE_AssertWithMessage((_VECTOR)->size > 0, "Vector is empty\n"),         \
+    CVector_GetPtr(_VECTOR, (_VECTOR)->size - 1)                              \
+  )
   
 
 #define CVector_Print(_VECTOR, _FORMAT)         \

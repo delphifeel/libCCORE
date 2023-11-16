@@ -11,6 +11,7 @@ void test_core_string_records(void)
     CORE_BuffInit(buff, content);
 
     CRecords records = CORE_StrSplitToRecords(buff, ":'", ',');
+    CRecords_TrimFields(&records);
 
     char result[100];
     result[0] = 0;

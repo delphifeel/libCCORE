@@ -10,21 +10,26 @@
     fwrite(BUFF, BUFF_SIZE, 1, f);                          \
     fclose(f);                                             \
 } while (0)
+
+char *CORE_FileReadAll(const char *filename, size_t *buff_size);
 	
-#define CORE_FileReadAll(FILE_NAME, BUFF_PTR, BUFF_SIZE_PTR) do {   \
-    FILE *f = fopen(FILE_NAME, "rb");                               \
-    if (f == NULL) {                                                \
-        CORE_Abort("Can't find file to read all: %s\n", FILE_NAME); \
-    }                                                               \
-    fseek(f, 0, SEEK_END);                                          \
-    long fsize = ftell(f);                                          \
-    fseek(f, 0, SEEK_SET);                                          \
-    *BUFF_PTR = CORE_MemAlloc(1, fsize + 1);                        \
-	char *buff = *BUFF_PTR;                                         \
-    *BUFF_SIZE_PTR = fsize + 1;                                     \
-    fread(buff, *BUFF_SIZE_PTR, 1, f);                              \
-    fclose(f);                                                      \
-    buff[fsize] = 0;                                                \
-} while (0)
+#ifdef CCORE_IMPL
+char *CORE_FileReadAll(const char *filename, size_t *buff_size)
+{
+    FILE *f = fopen(filename, "rb");                               
+    if (f == NULL) {                                                
+       return NULL;
+    }                                                               
+    fseek(f, 0, SEEK_END);                                          
+    long fsize = ftell(f);                                          
+    fseek(f, 0, SEEK_SET);                                         
+    char *buff = CORE_MemAlloc(1, fsize + 1);                        
+    *buff_size = fsize + 1;                                     
+    fread(buff, *buff_size, 1, f);                              
+    fclose(f);                                                      
+    buff[fsize] = 0;                                                
+    return buff;
+}
+#endif
 
 #endif

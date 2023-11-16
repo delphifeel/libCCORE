@@ -1,7 +1,10 @@
 #ifndef _CORE_STRING_H_
 #define _CORE_STRING_H_
 
+#include "CORE-debug.h"
+#include "CORE-memory.h"
 #include "CORE-types.h"
+#include "CORE-records.h"
 #include <ctype.h>
 
 // --> Macroses
@@ -42,6 +45,7 @@ typedef struct {
 // --> Definition
 bool CORE_CharOneOf(char c, const char *chars, uint chars_len);
 char *CORE_StrTrim(char *str);
+uint CORE_StrSplit(char *str, const char *separators, char *tokens[], uint tokens_size);
 CRecords CORE_StrSplitToRecords(char *str, const char *fields_separators, char record_separator);
 const char *CORE_StrFindEnd(const char *str, uint str_len, const char *substr, uint substr_len);
 void CORE_StrDelSpaces(char *str, uint str_len);
@@ -52,21 +56,45 @@ bool CORE_StrOneOf(const char *str, const char **list, uint list_len);
 
 // --> Implementation
 #ifdef CCORE_IMPL
+uint CORE_StrSplit(char *str, const char *separators, char *tokens[], uint tokens_size)
+{
+    CORE_AssertPointer(str);
+    CORE_MemZero(tokens, sizeof(char *) * tokens_size);
+    uint tokens_len = 0;
+    char *token = strtok(str, separators);
+    tokens[tokens_len++] = token;
+
+    while (tokens_len < tokens_size) {
+        token = strtok(NULL, separators);
+        if (token == NULL) {
+            break;
+        }
+        tokens[tokens_len++] = token;
+    }
+    return tokens_len;
+}
+
 #define _STR_SPLIT_DEF_VEC_SIZE (10)
 CRecords CORE_StrSplitToRecords(char *str, const char *fields_separators, char record_separator)
 {
+    CORE_AssertPointer(str);
     CVector(CRecord) records;
     CVector_Init(&records, _STR_SPLIT_DEF_VEC_SIZE);
 
     uint fields_separators_count = CORE_StrLen(fields_separators);
     CVector(string) curr_fields;
     CVector_Init(&curr_fields, _STR_SPLIT_DEF_VEC_SIZE);
-    CVector_Push(&curr_fields, CORE_StrTrim(str));
+    CVector_Push(&curr_fields, (str));
     char c = 0;
     while ((c = *str) != 0) {
         if (CORE_CharOneOf(c, fields_separators, fields_separators_count)) {
             *str = '\0';
-            CVector_Push(&curr_fields, CORE_StrTrim(str + 1));
+            char **curr_field = CVector_LastPtr(&curr_fields);
+            if ((str - *curr_field) > 0) {
+                CVector_Push(&curr_fields, (str + 1));
+            } else {
+                (*curr_field)++;
+            }
             str++;
             continue;
         }
@@ -75,13 +103,13 @@ CRecords CORE_StrSplitToRecords(char *str, const char *fields_separators, char r
             CRecord record = {curr_fields};
             CVector_Push(&records, record);
             CVector_Init(&curr_fields, _STR_SPLIT_DEF_VEC_SIZE);
-            CVector_Push(&curr_fields, CORE_StrTrim(str + 1));
+            CVector_Push(&curr_fields, (str + 1));
             str++;
             continue;
         }
         str++;
     }
-    CVector_Push(&curr_fields, CORE_StrTrim(str + 1));
+    CVector_Push(&curr_fields, (str + 1));
     CRecord record = {curr_fields};
     CVector_Push(&records, record);
 
@@ -110,6 +138,7 @@ bool CORE_StrOneOf(const char *str, const char **list, uint list_len)
 
 const char *CORE_StrFindEnd(const char *str, uint str_len, const char *substr, uint substr_len)
 {
+    CORE_AssertPointer(str);
     const char *str_pos = str;
     while (*str_pos != 0) {
         if (0 == strncmp(str_pos, substr, substr_len)) {
@@ -122,6 +151,7 @@ const char *CORE_StrFindEnd(const char *str, uint str_len, const char *substr, u
 
 char *CORE_StrTrim(char *str)
 {
+    CORE_AssertPointer(str);
     char *end;
 
     // Trim leading space
@@ -142,6 +172,7 @@ char *CORE_StrTrim(char *str)
 
 void CORE_StrDelSpaces(char *str, uint str_len)
 {
+    CORE_AssertPointer(str);
     char buff[str_len+1];
     buff[0] = 0;
     uint buff_len = 0;
